@@ -41,7 +41,7 @@ class LetterController {
 
         const createdLetter = this.letterService.createLetter({letter})
             .then(row => {
-                res.send(letter)
+                res.send(row);
             } )
             .catch(err => next(err));
     }
