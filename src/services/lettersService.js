@@ -18,8 +18,8 @@ class LettersService {
         return letter;
     }
 
-     async createLetter({ letter }) {
-         const query = `INSERT INTO public.letters(name, day_of_year, date_start, date_end, discount, currency, retention, type_rate, rate, rate_term, value_nominal, value_delivered, value_received, value_net, tcea, condition, user_id, capitalization, rate_discount, date_discount) VALUES ('${letter.name}', ${letter.dayOfYear}, '${letter.dateStart}', '${letter.dateEnd}', ${letter.discount}, '${letter.currency}', ${letter.retention}, '${letter.typeRate}', ${letter.rate}, '${letter.rateTerm}', ${letter.valueNominal}, ${letter.valueDelivered}, ${letter.valueReceived}, ${letter.valueNet},${letter.tcea}, '${letter.condition}', ${letter.userId}, '${letter.capitalization}', ${letter.rateDiscount}, '${letter.dateDiscount}');`;
+     async createLetter({ letter },userId) {
+         const query = `INSERT INTO public.letters(name, day_of_year, date_start, date_end, discount, currency, retention, type_rate, rate, rate_term, value_nominal, value_delivered, value_received, value_net, tcea, condition, user_id, capitalization, rate_discount, date_discount) VALUES ('${letter.name}', ${letter.dayOfYear}, '${letter.dateStart}', '${letter.dateEnd}', ${letter.discount}, '${letter.currency}', ${letter.retention}, '${letter.typeRate}', ${letter.rate}, '${letter.rateTerm}', ${letter.valueNominal}, ${letter.valueDelivered}, ${letter.valueReceived}, ${letter.valueNet},${letter.tcea}, '${letter.condition}', ${userId}, '${letter.capitalization}', ${letter.rateDiscount}, '${letter.dateDiscount}');`;
          const createdLetter = global.dbp.any(query);
          console.log("-------> Query: "+query);
          return createdLetter;

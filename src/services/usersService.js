@@ -4,7 +4,7 @@ class UsersService {
     constructor() {
         this.table = 'usuario';
     }
-
+    // TO DO findUserByUsername
     login(correo, contraseña) {
         return new Promise(async (resolve, reject)=>{
             let sql = 'SELECT public.__dates_1_login($1, $2) res'; //crear funcion de crear noticia en pgadmin
