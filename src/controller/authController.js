@@ -50,33 +50,28 @@ class AuthController {
 
     register = async (req, res) => {
         try{
-            let nombres = req.body.nombres;
-            let apellido_pa = req.body.apellido_pa;
-            let apellido_ma = req.body.apellido_ma;
-            let fecha_naci = req.body.fecha_naci;
-            let tipo_usuario = req.body.tipo_usuario;
-            let correo = req.body.correo;
+            let name = req.body.name;
+            let type_document = req.body.type_document;
+            let num_document = req.body.num_document;
+            let email = req.body.email;
             let password = req.body.password;
+            let c_username = req.body.c_username;
 
-            if(!nombres) throw { msj: 'Usuario inválido', status: 400};
-            if(!apellido_pa) throw { msj: 'Usuario inválido', status: 400};
-            if(!apellido_ma) throw { msj: 'Usuario inválido', status: 400};
-            if(!fecha_naci) throw { msj: 'Usuario inválido', status: 400};
-            if(!tipo_usuario) throw { msj: 'Usuario inválido', status: 400};
-            if(!correo) throw { msj: 'Usuario inválido', status: 400};
+            if(!name) throw { msj: 'Usuario inválido', status: 400};
+            if(!type_document) throw { msj: 'Usuario inválido', status: 400};
+            if(!num_document) throw { msj: 'Usuario inválido', status: 400};
+            if(!email) throw { msj: 'Usuario inválido', status: 400};
             if(!password) throw { msj: 'Usuario inválido', status: 400};
-
-            tipo_usuario = _encryptor.decrypt(tipo_usuario.replace(/ /g, '+'));
+            if(!c_username) throw { msj: 'Usuario inválido', status: 400};
 
 
             let obj = {
-                nombres,
-                apellido_pa,
-                apellido_ma,
-                fecha_naci,
-                tipo_usuario,
-                correo,
-                password
+                name,
+                type_document,
+                num_document,
+                email,
+                password,
+                c_username,
             };
             let register = await userService.register(obj);
 
@@ -85,88 +80,21 @@ class AuthController {
                     status: register.status,
                     msj   : register.msj
                 }
-                console.log('24');
                 return res.send(obj);
             } else{ // si el status no es 1 entonces la funcion se ejecuto correctamente y ahora si se puede generar un token
-                console.log('30');
-                const token = jwt.sign(register.metadata, 'my_secret_key', {expiresIn: 60 * 60 * 24 });
-                let objEmail = {
-                    nombres: nombres,
-                    apellido_pa: apellido_pa,
-                    correoDestino: correo,
-                    token: token
-                }
-                let email = await this.verificacionEmail(objEmail);
-                console.log(email)
-
-
-                let obj = {
-                    token: token,
-                    status: register.status,
-                    metadata: register.metadata,
-                    msj: register.msj
-                }
-
-                return res.status(200).send(obj);
-            }
-
-        }catch(err){
-
-        }
-    }
-
-    verificarTokenEmail = async(req, res) =>{
-        try{
-
-            let token = req.params.token;
-            console.log(token)
-            jwt.verify(token,'my_secret_key', (err, data)=>{
-                if(err){
-                    console.log('Error al obtener el token');
-                }else{
-                    console.log('usuario',data);
-                    let confirm = userService.confirmarEmail(data.id_persona);
-                    if(data.id_rol ===1){
-                        res.redirect('http://localhost:4200/home-cliente');
-                    }else if(data.id_rol === 2){
-                        res.redirect('http://localhost:4200/home-asesor');
+                let response = {
+                    status: 'Registrado',
+                    body: {
+                        name: obj.name,
+                        type_document: obj.type_document,
+                        num_document: obj.num_document,
+                        email:obj.email,
+                        c_username:obj.c_username,
                     }
-
                 }
-            })
 
-
-            res.send({email:'confirmed'})
-        }catch(err){
-
-        }
-    }
-
-    verificacionEmail = async(obj) =>{
-        try{
-
-            console.log('43');
-            let cuerpoEmail = `
-            <div style="width:100%;height:320px; background-color:EAECF6;text-align:center;border-radius:30px">
-                <div style="background-color:0D1649;border-radius:30px">
-                    <h1 style="text-align:center; color:white">GRACIAS ${obj.nombres} ${obj.apellido_pa}!</h1>
-                    <h3 style="text-align:center; color:white">Ya casi formas parte de nosotros</h3>
-                </div>
-            
-                <div style="width:80%;height:100;margin-left:10%; background-color:C3C6D7;text-align:center; border-radius: 20px">
-                    <h2>Verifica tu correo electrónico</h2>
-                    <button style="padding: 10px; font-weight: 600; font-size: 20px; color: #ffffff;background-color: #1883ba; border-radius: 6px;border: 1px solid #000000;">
-                        <a style="text-decoration:none;color:white" target="_blank" href="http://localhost:3000/api/auth/verifyEmail/${obj.token}">
-                        Confirmar cuenta
-                        </a>
-                    </button>
-                </div>
-                <h5 style="padding:10px 40px 20px 30px">
-                    Verifique su dirección de correo electrónico para acceder a su cuenta y comenzas a usar Dates!</h5>
-                <h5 style="float:right">Dates 2021</h5>
-          </div>
-          `
-
+                return res.status(200).send(response);
+            }
 
         }catch(err){
             console.log(err);

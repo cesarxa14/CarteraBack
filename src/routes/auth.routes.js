@@ -9,8 +9,6 @@ function apiAuth(app) {
 
     router.post('/login', authController.login);
     router.post('/register', authController.register);
-    router.post('/verificacionEmail', authController.verificacionEmail);
-    router.get('/verifyEmail/:token', authController.verificarTokenEmail);
 
 
 }

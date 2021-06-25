@@ -22,22 +22,20 @@ class UsersService {
 
     register(obj) {
         return new Promise(async (resolve, reject)=>{
-            let sql = 'SELECT public.__dates_2_register($1, $2, $3, $4, $5, $6, $7) res';
-            sql = await global.pgp.as.format(sql,[obj.nombres, obj.apellido_pa, obj.apellido_ma, obj.fecha_naci, obj.tipo_usuario, obj.correo, obj.password]);
+            let sql = 'INSERT INTO public.users(name, type_document, num_document, email, password, c_username) VALUES ($1, $2, $3, $4, $5, $6)';
+            sql = await global.pgp.as.format(sql,[obj.name, obj.type_document, obj.num_document, obj.email, obj.password, obj.c_username]);
             console.log('sql->>>', sql);
-            global.dbp.one(sql).then(data=>{
-                return resolve(data.res);
-            }).catch(err => {
-                err.detalle = new Error().stack;
-                console.log(err)
-                return reject(err);
-            });
+            const createdUser = global.dbp.any(sql).then(
+                value => resolve(value)
+            ).catch(
+                err => reject(err)
+            );
         })
     }
 
 
 
-    
+
 
     confirmarEmail(id_persona) {
         return new Promise(async (resolve, reject)=>{
