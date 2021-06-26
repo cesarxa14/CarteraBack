@@ -6,7 +6,7 @@ class LettersService {
     }
     async getLettersByUserId(userId) {
         const query = `SELECT * FROM public.letters where user_id= ${userId}`;
-        const letters = global.dbp.any(query);
+        const letters = await global.dbp.any(query);
 
         return letters;
     }
@@ -18,9 +18,14 @@ class LettersService {
         return letter;
     }
 
-     async createLetter({ letter },userId) {
-         const query = `INSERT INTO public.letters(name, day_of_year, date_start, date_end, discount, currency, retention, type_rate, rate, rate_term, value_nominal, value_delivered, value_received, value_net, tcea, condition, user_id, capitalization, rate_discount, date_discount) VALUES ('${letter.name}', ${letter.dayOfYear}, '${letter.dateStart}', '${letter.dateEnd}', ${letter.discount}, '${letter.currency}', ${letter.retention}, '${letter.typeRate}', ${letter.rate}, '${letter.rateTerm}', ${letter.valueNominal}, ${letter.valueDelivered}, ${letter.valueReceived}, ${letter.valueNet},${letter.tcea}, '${letter.condition}', ${userId}, '${letter.capitalization}', ${letter.rateDiscount}, '${letter.dateDiscount}');`;
-         const createdLetter = global.dbp.any(query);
+     async createLetter(letter) {
+         const query = `
+         INSERT INTO 
+            public.letters(name              , day_of_year       , date_start              , date_end                    , discount           , currency                , retention          , type_rate         , rate                 , rate_term             , value_nominal           , value_delivered         , value_received         , value_net          , tcea         , condition           , user_id         , capitalization         , rate_discount          , date_discount) 
+                VALUES    ('${letter.nombre}', ${letter.diasxaño}, '${letter.fechaEmision}', '${letter.fechaVencimiento}', ${letter.descuento}, '${'falta el currency'}', ${letter.retencion}, '${letter.tipoTasa}', ${letter.tasaEfect}  ,'${letter.plazoTasa}'  , ${letter.valorNominal}  , ${letter.valorEntregado}, ${letter.valorRecibido}, ${letter.valorNeto},${letter.TCEP}, '${letter.CIMotivo}', ${letter.idUser}, '${letter.periodoCapi}', ${letter.tasaDescuento}, '${letter.fechaDescuento}')
+                RETURNING *;`;
+         const createdLetter = await global.dbp.one(query);
+         console.log(createdLetter)
          console.log("-------> Query: "+query);
          return createdLetter;
      }

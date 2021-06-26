@@ -11,34 +11,32 @@ class AuthController {
 
             // return res.send({msj:'Ingresaste'});
             console.log('fdsfds',req.body)
-            let correo = req.body.correo;
+            let username = req.body.username;
             let password = req.body.password;
             //se valida que exista el usuario y contraseña sino emite un mensaje con estado de error
-            if(!correo) throw { msj: 'Usuario inválido', status: 400};
+            if(!username) throw { msj: 'Usuario inválido', status: 400};
             if(!password) throw { msj: 'Contraseña inválida', status: 400};
-            let login = await userService.login(correo,password);;
+            let login = await userService.login(username,password);
+
             console.log('controler', login)
 
-            //status = 1 es error y retornara un mensaje de error enviado desde la bd
-            if(login.status == 1){
+            if(login) {
+
+                const token = jwt.sign(login, 'my_secret_key', {expiresIn: 60 * 60 * 24 });
+                console.log('token',token)
                 let obj = {
-                    status: login.status,
-                    msj   : login.msj
+                    metadata: login,
+                    token: token
                 }
-                console.log('24');
-                return res.send(obj);
-            } else{ // si el status no es 1 entonces la funcion se ejecuto correctamente y ahora si se puede generar un token
-                console.log('30');
-                login.metadata.id_persona = _encryptor.encrypt(login.metadata.id_persona);
-                const token = jwt.sign(login.metadata, 'my_secret_key', {expiresIn: 60 * 60 * 24 });
-                // console.log(token)
-                let obj = {
-                    token: token,
-                    status: login.status,
-                    metadata: login.metadata
-                }
-                console.log(obj)
                 return res.status(200).send(obj);
+
+            } else{
+                let obj = {
+                    status: 404,
+                    msj: 'Usuario y/o contraseña incorrectos'
+                }
+                return res.send(obj)
+
             }
 
 
@@ -50,12 +48,13 @@ class AuthController {
 
     register = async (req, res) => {
         try{
-            let name = req.body.name;
-            let type_document = req.body.type_document;
-            let num_document = req.body.num_document;
+           
+            let name = req.body.nombres;
+            let type_document = req.body.typeDocument;
+            let num_document = req.body.numDocument;
             let email = req.body.email;
             let password = req.body.password;
-            let c_username = req.body.c_username;
+            let c_username = req.body.username;
 
             if(!name) throw { msj: 'Usuario inválido', status: 400};
             if(!type_document) throw { msj: 'Usuario inválido', status: 400};
@@ -74,26 +73,21 @@ class AuthController {
                 c_username,
             };
             let register = await userService.register(obj);
-
-            if(register.status == 1){
+            if(register) {
+                const token = jwt.sign(register, 'my_secret_key', {expiresIn: 60 * 60 * 24 });
                 let obj = {
-                    status: register.status,
-                    msj   : register.msj
-                }
-                return res.send(obj);
-            } else{ // si el status no es 1 entonces la funcion se ejecuto correctamente y ahora si se puede generar un token
-                let response = {
-                    status: 'Registrado',
-                    body: {
-                        name: obj.name,
-                        type_document: obj.type_document,
-                        num_document: obj.num_document,
-                        email:obj.email,
-                        c_username:obj.c_username,
-                    }
+                    metadata: register,
+                    token: token
                 }
 
-                return res.status(200).send(response);
+                return res.status(200).send(obj)
+            } else{
+                let obj = {
+                    status: 403,
+                    msj: 'No se pudo registrar'
+                }
+
+                return res.status(403).send(obj)
             }
 
         }catch(err){

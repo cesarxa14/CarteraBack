@@ -24,12 +24,15 @@ class LetterController {
             })
             .catch(err => next(err));
     }
+
     getLettersByUserId = async (req, res, next) => {
-        const { userId } = req.params;
+        console.log('req', req.params.userId)
+        const userId = parseInt(req.params.userId);
+        console.log(typeof userId)
         const letters = this.letterService.getLettersByUserId(userId)
             .then(row => {
                 res.status(200).json({
-                    message: row.length >= 1 ? "Letter gets successfully":`User with id: ${userId} not found` ,
+                    message: row.length >= 1 ? "Letters gets successfully":`User with id: ${userId} not found` ,
                     data: row,
                 })
             })
@@ -37,9 +40,12 @@ class LetterController {
     }
 
     createLetter = async (req, res, next) => {
-        const { body: letter } = req;
 
-        const createdLetter = this.letterService.createLetter({letter})
+        
+        const { body: letter } = req;
+        console.log(letter)
+
+        const createdLetter = this.letterService.createLetter(letter)
             .then(row => {
                 res.send(row);
             } )

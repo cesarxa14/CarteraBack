@@ -19,7 +19,7 @@ function apiLetters(app) {
     router.get( "/user/:userId", letterController.getLettersByUserId);
 
 
-    router.post("/"
+    router.post(""
                                                      ,letterController.createLetter);
 
     router.put("/:letterId"     , validationHandler({consultantId: consultantIdSchema},'params')
