@@ -9,6 +9,7 @@ function apiAuth(app) {
 
     router.post('/login', authController.login);
     router.post('/register', authController.register);
+    router.get('/tipoCambio', authController.tipoCambio);
 
 
 }

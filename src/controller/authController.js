@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const _encryptor = require('simple-encryptor')('secret_server_key');
 const {UsersService} = require('../services/usersService');
 const userService = new UsersService();
+var axios = require('axios');
 
 class AuthController {
     constructor(){}
@@ -93,6 +94,29 @@ class AuthController {
         }catch(err){
             console.log(err);
         }
+    }
+
+    tipoCambio = async (req,res)=> {
+        console.log('entró')
+        var config = {
+            method: 'get',
+            url: 'https://api.apis.net.pe/v1/tipo-cambio-sunat',
+            headers: { 
+                'Authorization': 'Bearer bsOzCDXPQZxOi5rhGbMuraa1vaL2w2lPjaFm6iYcM5DFle3hmRmbfZSZGdzA', 
+                'Accept': 'application/json'
+                // ...data.getHeaders()
+            },
+        }
+
+        axios(config)
+            .then(function (response) {
+                // console.log(JSON.stringify(response.data));
+                console.log(response.data)
+                return res.status(200).send(response.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
 }
