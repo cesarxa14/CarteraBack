@@ -49,7 +49,7 @@ class AuthController {
 
     register = async (req, res) => {
         try{
-           
+
             let name = req.body.nombres;
             let type_document = req.body.typeDocument;
             let num_document = req.body.numDocument;
@@ -101,8 +101,8 @@ class AuthController {
         var config = {
             method: 'get',
             url: 'https://api.apis.net.pe/v1/tipo-cambio-sunat',
-            headers: { 
-                'Authorization': 'Bearer bsOzCDXPQZxOi5rhGbMuraa1vaL2w2lPjaFm6iYcM5DFle3hmRmbfZSZGdzA', 
+            headers: {
+                'Authorization': 'Bearer bsOzCDXPQZxOi5rhGbMuraa1vaL2w2lPjaFm6iYcM5DFle3hmRmbfZSZGdzA',
                 'Accept': 'application/json'
                 // ...data.getHeaders()
             },
@@ -117,6 +117,41 @@ class AuthController {
             .catch(function (error) {
                 console.log(error);
             });
+    }
+
+    getUserByUsername = async (req, res, next) => {
+        const { username } = req.params;
+        const user = userService.getUserByUsername(username)
+            .then(row => {
+                res.status(200).json({
+                    message: row.length >= 1 ? "User gets successfully":`User with username: ${username} not found` ,
+                    data: row,
+                })
+            })
+            .catch(err => next(err));
+    }
+
+    deleteUserById = async(req,res,next) =>{
+        const { userId } = req.params;
+        const userDeleted = userService.deleteUser(userId)
+            .then(row => {
+                res.status(200).json({
+                    message: 'Deleted user' ,
+                    data: row,
+                })
+            }).catch(err => next(err));
+    }
+
+    updateUser = async (req,res,next) => {
+        const { userId } = req.params;
+        const { user } = req.body;
+        const updateUser = userService.updateUser(userId,user)
+            .then(row => {
+                res.status(200).json({
+                    message: 'Updated User' ,
+                    data: row,
+                })
+            }).catch(err => next(err));
     }
 
 }
