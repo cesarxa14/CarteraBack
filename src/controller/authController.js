@@ -19,11 +19,11 @@ class AuthController {
             if(!password) throw { msj: 'Contraseña inválida', status: 400};
             let login = await userService.login(username,password);
 
-            console.log('controler', login)
+            console.log('controler', login[0])
 
-            if(login) {
+            if(login.length > 0) {
 
-                const token = jwt.sign(login, 'my_secret_key', {expiresIn: 60 * 60 * 24 });
+                const token = jwt.sign(login[0], 'my_secret_key', {expiresIn: 60 * 60 * 24 });
                 console.log('token',token)
                 let obj = {
                     metadata: login,

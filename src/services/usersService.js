@@ -10,7 +10,7 @@ class UsersService {
             let sql = 'SELECT * FROM users WHERE c_username = $1 AND password = $2'; //crear funcion de crear noticia en pgadmin
             sql = await global.pgp.as.format(sql,[username, password]);
             console.log('sql->>>', sql);
-            global.dbp.one(sql).then(data=>{
+            global.dbp.any(sql).then(data=>{
                 return resolve(data);
             }).catch(err => {
                 err.detalle = new Error().stack;
