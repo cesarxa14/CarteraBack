@@ -14,7 +14,7 @@ class ExpenseService {
         return expense
     }
 
-    async createExpense({expense}){
+    async createExpense(expense){
         const query = `INSERT INTO public.expenses( name, description, value, condition, id_letter) VALUES ( '${expense.name}', '${expense.description}', ${expense.value}, '${expense.condition}', ${expense.idLetter});`
         const createdExpense = global.dbp.any(query);
         return createdExpense;

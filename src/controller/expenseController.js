@@ -32,11 +32,11 @@ class ExpenseController {
         }).catch(err => next(err));
     }
     createExpense = async (req,res,next) => {
-        const { body: expense } = req;
+        const expense = req.body;
         const createdExpense = this.expenseService.createExpense(expense);
         createdExpense.then(data =>{
             res.status(200).json({
-                message: data >= 1 ?  'Expenses created successfully':` Letter by id:${expense.idLetter} not found`,
+                message: 'Expenses created successfully',
                 data:data
             })
         }).catch(err => next(err));

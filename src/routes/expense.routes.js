@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-
+const {ExpenseController} = require('../controller/expenseController');
 function apiExpense(app){
     app.use('/api/expense', router);
 
-    const {ExpenseController} = require('../controller/expenseController');
+
     const expenseController = new ExpenseController();
 
     router.get('/:expenseId', expenseController.getExpenseById);
