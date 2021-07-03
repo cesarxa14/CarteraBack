@@ -120,6 +120,20 @@ class AuthController {
             });
     }
 
+    getUserByID = async (req, res, next) => {
+        let id = req.params.userId;
+        console.log(id)
+        const user = userService.getUserByID(id)
+            .then(row => {
+                console.log(row)
+                res.status(200).send({
+                    message: row ? "User gets successfully":`User with Id: ${id} not found` ,
+                    data: row,
+                })
+            })
+            .catch(err => next(err));
+    }
+
     getUserByUsername = async (req, res, next) => {
         const { username } = req.params;
         const user = userService.getUserByUsername(username)
@@ -133,7 +147,8 @@ class AuthController {
     }
 
     deleteUserById = async(req,res,next) =>{
-        const { userId } = req.params;
+        console.log(req.params)
+        const userId = req.params.userId;
         const userDeleted = userService.deleteUser(userId)
             .then(row => {
                 res.status(200).json({
@@ -144,10 +159,17 @@ class AuthController {
     }
 
     updateUser = async (req,res,next) => {
-        const { userId } = req.params;
-        const { user } = req.body;
-        const updateUser = userService.updateUser(userId,user)
+        // console.log('id user', req.params.userId)
+        // console.log('body new', req.body)
+
+        let bodyUser = req.body;
+        let idUser = req.params.userId;
+        // const { userId } = req.params;
+        // const { user } = req.body;
+        // console.log(user, '---', userId)
+        const updateUser = userService.updateUser(idUser, bodyUser)
             .then(row => {
+                console.log('row', row)
                 res.status(200).json({
                     message: 'Updated User' ,
                     data: row,

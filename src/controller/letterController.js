@@ -75,6 +75,19 @@ class LetterController {
             }))
             .catch(err => next(err));
     }
+
+    deleteLettersByUser = async (req,res,next) => {
+
+        console.log('hola p causa',req.params.idUser, 'ya')
+        const idUser = req.params.idUser;
+        console.log('okii', idUser)
+        const deletedLetter = this.letterService.deleteLettersByUser(idUser)
+            .then(value => res.status(200).json({
+                message: "Letter deleted successfully",
+                data: value
+            }))
+            .catch(err => next(err));
+    }
 }
 module.exports = {
     LetterController: LetterController

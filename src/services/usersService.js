@@ -6,6 +6,13 @@ class UsersService {
     }
     // TO DO findUserByUsername
 
+    async getUserByID(idUser){
+        const query = `SELECT * FROM public.users where id= ${idUser}`;
+        const user = await global.dbp.one(query);
+
+        return user;
+    }
+
     async getUserByUsername(username){
         const query = `SELECT * FROM public.users where c_username= ${username}`;
         const user = await global.dbp.any(query);
@@ -18,9 +25,12 @@ class UsersService {
 
         return userDeleted;
     }
-    async updateUser(userId,{user}){
-        const query = `UPDATE public.users SET ${user.name != undefined ?  `name=${user.name},`: ''  } ${user.type_document != undefined ?  `type_document='${user.type_document}',`: ''  } ${user.num_document != undefined ?  `num_document='${user.num_document}',`: ''  } ${user.email!= undefined ?  `email=${user.email},`: ''  } ${user.password != undefined ?  `password='${user.password}',`: ''  } ${user.c_username!= undefined ?  `c_username=${user.c_username}`: ''  }   WHERE id=${userId};`;
-        const updatedUser = global.dbp.any(query);
+    async updateUser(userId,user){
+        console.log('id', userId, 'user', user)
+        const query = `UPDATE public.users SET name='${user.name}', type_document='${user.typeDocument}', num_document='${user.numDocument}', email='${user.email}', password='${user.password}', c_username='${user.username}' WHERE id=${userId}
+                            RETURNING *;`;
+        const updatedUser = await global.dbp.one(query);
+        console.log('query', updatedUser)
 
         return updatedUser;
     }

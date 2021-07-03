@@ -28,6 +28,8 @@ function apiLetters(app) {
 
     router.delete("/:letterId"   , validationHandler({consultantId: consultantIdSchema},'params')
                                                      , letterController.deleteLetterById);
+
+    router.delete("/user/:idUser"   , letterController.deleteLettersByUser);
 }
 
 module.exports = {

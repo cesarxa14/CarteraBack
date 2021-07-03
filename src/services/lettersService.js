@@ -48,6 +48,23 @@ class LettersService {
 
         return deletedLetter;
     }
+
+    async deleteLettersByUser(idUser) {
+        const query = `DELETE FROM public.letters WHERE user_id=${idUser};`;
+        console.log('query->>>', query)
+        // const query = `SELECT * FROM public.letters where id=${letterId}`;
+        const lettersDeleted = await global.dbp.any(query);
+
+        console.log('lett', lettersDeleted  )
+        // const deletedLetter = this.getLetterById(letterId)
+        //     .then( row => new Promise(
+        //             (resolve, reject) => row.length > 0 ?
+        //                 resolve(global.dbp.any(query)) :
+        //                 reject(`Id:  ${letterId} does not exist`)))
+
+
+        return lettersDeleted;
+    }
 }
 
 module.exports = {
